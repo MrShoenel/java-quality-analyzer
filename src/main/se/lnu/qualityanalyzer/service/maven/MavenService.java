@@ -14,14 +14,16 @@ public class MavenService {
     public void run(String sourcePath) throws MavenException {
         try {
             InvocationRequest request = new DefaultInvocationRequest();
-            request.setPomFile(new File(sourcePath + "/" + POM_XML));
+            request.setPomFile(new File(sourcePath + File.separator + POM_XML));
             request.setGoals(Collections.singletonList(DEPENDENCY));
+            request.setOutputHandler(line -> {});
+            request.setErrorHandler(line -> {});
 
             Invoker invoker = new DefaultInvoker();
+            invoker.getLogger().setThreshold(InvokerLogger.FATAL);
             invoker.execute(request);
         } catch (MavenInvocationException e) {
             throw new MavenException(e);
         }
     }
-
 }

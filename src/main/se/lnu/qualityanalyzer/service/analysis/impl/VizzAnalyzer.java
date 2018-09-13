@@ -19,8 +19,6 @@ public class VizzAnalyzer implements MetricAnalyzer {
 
     @Override
     public Map<MetricName, Metric> analyze(String sourcePath) {
-        long tic = System.currentTimeMillis();
-
         Debug.setDebug(true);
         Debug.setOutput(true);
 
@@ -30,7 +28,7 @@ public class VizzAnalyzer implements MetricAnalyzer {
 
         File sourcePathFile = new File(sourcePath);
         if (!sourcePathFile.exists())
-            System.err.println("Directory " + sourcePath + " does not exist.");
+            throw new Error("Directory " + sourcePath + " does not exist.");
         else {
             ParametersCollection params = null;
             params = ParametersCollectionSerializer.deserialize(AnalysisType.JAVA);
@@ -47,9 +45,7 @@ public class VizzAnalyzer implements MetricAnalyzer {
         }
 
         long toc = System.currentTimeMillis();
-        System.out.println("Parsing completed in " + ((toc - tic) / 1000) + " sec.");
 
         return AnalysisUtil.mapRootMetrics(analysis, AnalysisType.JAVA);
     }
-
 }

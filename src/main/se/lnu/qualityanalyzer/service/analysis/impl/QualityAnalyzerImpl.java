@@ -68,11 +68,6 @@ public class QualityAnalyzerImpl implements QualityAnalyzer {
         return null;
     }
 
-    @Override
-    public List<VersionAnalysisOutput> analyzeVersions(AnalysisInput analysisInput) {
-        throw new UnsupportedOperationException("Not yet implemented!");
-    }
-
     /**
      * Analyze quality in list of commits.
      *

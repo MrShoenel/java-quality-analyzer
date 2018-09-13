@@ -7,3 +7,8 @@
 
 # Log files
 *.log
+
+# Output related
+allClones.txt
+*.ser
+*.csv
