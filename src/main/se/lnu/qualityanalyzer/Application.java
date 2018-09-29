@@ -5,7 +5,7 @@ import org.eclipse.jgit.api.Git;
 import se.lnu.qualityanalyzer.enums.MetricName;
 import se.lnu.qualityanalyzer.model.analysis.Metric;
 import se.lnu.qualityanalyzer.model.git.GitRepository;
-import se.lnu.qualityanalyzer.service.analysis.impl.VizzAnalyzer;
+import se.lnu.qualityanalyzer.service.analysis.impl.VizzMetricAnalyzer;
 import se.lnu.qualityanalyzer.service.maven.MavenService;
 
 import java.io.File;
@@ -41,8 +41,14 @@ public class Application {
     }
 
     public static void main(String[] args) {
+        double version = Double.parseDouble(System.getProperty("java.specification.version"));
+        if (version > 1.8) {
+            stderr.println("Java versions newer than 1.8 are not supported.");
+            System.exit(Integer.MIN_VALUE);
+        }
+
         if (args.length == 0) {
-            System.err.println("The first and only required argument must be the path to a Git-repository.");
+            stderr.println("The first and only required argument must be the path to a Git-repository.");
             System.exit(-1);
         }
 
@@ -70,19 +76,18 @@ public class Application {
         }
 
         // Now let's try to get the analysis result:
-        VizzAnalyzer vizzAnalyzer = new VizzAnalyzer();
+        VizzMetricAnalyzer vizzMetricAnalyzer = new VizzMetricAnalyzer();
         String json = null;
         try {
-            Map<MetricName, Metric> commitMetrics = vizzAnalyzer.analyze(repo.getAbsolutePath());
+            Map<MetricName, Metric> commitMetrics = vizzMetricAnalyzer.analyze(repo.getAbsolutePath());
             json = new Gson().toJson(commitMetrics);
         } catch (Throwable t) {
-            stderr.println("Cannot obtain metrics using VizzAnalyzer.");
+            stderr.println("Cannot obtain metrics using VizzMetricAnalyzer.");
             stderr.println(t.getMessage());
             System.exit(-4);
         }
 
-        // Enable again so that we can print our JSON to stdout:
-        Application.toggleSysout(true);
+        // Let's print our JSON to stdout:
         stdout.println(json);
     }
 }

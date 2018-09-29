@@ -12,3 +12,4 @@
 allClones.txt
 *.ser
 *.csv
+out/

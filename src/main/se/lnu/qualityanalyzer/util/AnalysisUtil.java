@@ -56,16 +56,17 @@ public final class AnalysisUtil {
     public static void printPublicMetrics(AnalysisInterface analysisHandler, AnalysisType analysisType) {
         MetricsFactory mf = analysisType.getMetricsFactory();
         Measurement measurement = analysisHandler.getMeasurement(AnalysisInterface.EntryType.UPLOAD, null);
-        printMetrics(mf.getAllPublicMetrics(), measurement);
+        //printMetrics(mf.getAllPublicMetrics(), measurement);
     }
 
     public static void printRootMetrics(AnalysisInterface analysisHandler, AnalysisType analysisType) {
         MetricsFactory mf = analysisType.getMetricsFactory();
         Measurement measurement = analysisHandler.getMeasurement(AnalysisInterface.EntryType.PROGRAM,
                 analysisHandler.getPrograms().entrySet().iterator().next().getKey());
-        printMetrics(mf.getAllRootMetrics(), measurement);
+        //printMetrics(mf.getAllRootMetrics(), measurement);
     }
 
+    @Deprecated
     private static void printMetrics(Collection<Metrics> metrics, Measurement measurement) {
         System.out.println("\nResult of quality analysis - KPI's:");
         for (Metrics metric : metrics) {

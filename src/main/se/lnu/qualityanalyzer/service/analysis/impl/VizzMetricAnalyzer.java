@@ -15,7 +15,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-public class VizzAnalyzer implements MetricAnalyzer {
+public class VizzMetricAnalyzer implements MetricAnalyzer {
 
     @Override
     public Map<MetricName, Metric> analyze(String sourcePath) {
@@ -33,18 +33,11 @@ public class VizzAnalyzer implements MetricAnalyzer {
             ParametersCollection params = null;
             params = ParametersCollectionSerializer.deserialize(AnalysisType.JAVA);
 
-            try {
-                analysis.analyze(AnalysisType.JAVA, sourcePathFile, params);
-            } catch(Exception e) {
-                e.printStackTrace();
-                return new HashMap<>();
-            }
+            analysis.analyze(AnalysisType.JAVA, sourcePathFile, params);
 
             AnalysisUtil.printMetricsIntoFile(analysis, params);
             AnalysisUtil.printRootMetrics(analysis, AnalysisType.JAVA);
         }
-
-        long toc = System.currentTimeMillis();
 
         return AnalysisUtil.mapRootMetrics(analysis, AnalysisType.JAVA);
     }
