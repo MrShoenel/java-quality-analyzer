@@ -1,5 +1,7 @@
 # IntelliJ IDEA files
-/.idea
+/.idea/*.xml
+/.idea/.name
+!/.idea/artifacts/*
 /**/*.iml
 
 # Target folder
