@@ -84,8 +84,8 @@ public class Application {
             Map<MetricName, Metric> commitMetrics = vizzMetricAnalyzer.analyze(projectDir.getAbsolutePath());
             json = new Gson().toJson(commitMetrics);
         } catch (Throwable t) {
-            stderr.println("Cannot obtain metrics using VizzMetricAnalyzer.");
-            stderr.println(t.getMessage());
+            stderr.println("Cannot obtain metrics using VizzMetricAnalyzer: " + t.getMessage());
+            t.printStackTrace(stderr);
             ExitCodes.VIZZ_ANALYZER_ERROR.exit();
         }
 
