@@ -1,13 +1,11 @@
 package se.lnu.qualityanalyzer;
 
 import com.google.gson.Gson;
-import org.eclipse.jgit.api.Git;
+import se.lnu.qualityanalyzer.enums.ExitCodes;
 import se.lnu.qualityanalyzer.enums.MetricName;
 import se.lnu.qualityanalyzer.model.analysis.Metric;
-import se.lnu.qualityanalyzer.model.git.GitRepository;
 import se.lnu.qualityanalyzer.service.analysis.impl.VizzMetricAnalyzer;
 import se.lnu.qualityanalyzer.service.build.BuildService;
-import se.lnu.qualityanalyzer.service.build.MavenService;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,6 +13,7 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Application {
     private static final PrintStream
@@ -45,46 +44,49 @@ public class Application {
         double version = Double.parseDouble(System.getProperty("java.specification.version"));
         if (version > 1.8) {
             stderr.println("Java versions newer than 1.8 are not supported.");
-            System.exit(Integer.MIN_VALUE);
+            ExitCodes.JAVA_TOO_NEW.exit();
         }
 
         if (args.length == 0) {
-            stderr.println("The first and only required argument must be the path to a Git-repository.");
-            System.exit(-1);
+            stderr.println("The first and only required argument must be the path to a Java project that can be built using either Maven or Gradle.");
+            stderr.println("Specify --help to get more information.");
+            ExitCodes.ARGS.exit();
+        }
+
+        if ("--help".equals(args[0])) {
+            stderr.println("The only argument supported is a path to a Java project.");
+            stderr.println("The possible exit-codes are: " + Arrays.stream(ExitCodes.OK.getDeclaringClass().getEnumConstants()).map(e -> e.toString() + "(" + e.getCode() + ")").collect(Collectors.joining(", ")));
+            ExitCodes.OK.exit();
         }
 
         // Disable all kinds of output for code using System.out or System.err:
         Application.toggleSysout(false);
 
-        GitRepository repo = null;
-        try {
-            repo = new GitRepository(Git.open(new File(args[0])).getRepository(), args[0]);
-        } catch (Throwable t) {
-            stderr.println("Cannot open Git-repository in: " + args[0]);
-            stderr.println(t.getMessage());
-            stderr.println(Arrays.stream(t.getStackTrace()).map(s -> s.toString()));
-            System.exit(-2);
+        File projectDir = new File(args[0]);
+        if (!projectDir.exists() || !projectDir.isDirectory()) {
+            stderr.println("The given directory does not exist or is not a directory.");
+            ExitCodes.INVALID_PROJECT.exit();
         }
 
         // Now let's try to build this..
         try {
-            BuildService.build(repo);
+            BuildService.build(projectDir);
         } catch (Throwable t) {
             stderr.println("Cannot build the repo: " + t.getMessage());
-            stderr.println(t.getMessage());
-            System.exit(-3);
+            t.printStackTrace(stderr);
+            ExitCodes.BUILD_ERROR.exit();
         }
 
         // Now let's try to get the analysis result:
         VizzMetricAnalyzer vizzMetricAnalyzer = new VizzMetricAnalyzer();
         String json = null;
         try {
-            Map<MetricName, Metric> commitMetrics = vizzMetricAnalyzer.analyze(repo.getAbsolutePath());
+            Map<MetricName, Metric> commitMetrics = vizzMetricAnalyzer.analyze(projectDir.getAbsolutePath());
             json = new Gson().toJson(commitMetrics);
         } catch (Throwable t) {
             stderr.println("Cannot obtain metrics using VizzMetricAnalyzer.");
             stderr.println(t.getMessage());
-            System.exit(-4);
+            ExitCodes.VIZZ_ANALYZER_ERROR.exit();
         }
 
         // Let's print our JSON to stdout:

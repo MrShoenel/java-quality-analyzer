@@ -1,8 +1,6 @@
 package se.lnu.qualityanalyzer.service.build;
 
 import se.lnu.qualityanalyzer.enums.ProjectType;
-import se.lnu.qualityanalyzer.model.git.GitRepository;
-
 import java.io.File;
 
 
@@ -14,9 +12,9 @@ public class BuildService {
             GradleBuildService = new GradleService()
             , MavenBuildService = new MavenService();
 
-    public static void build(GitRepository repository) {
-        final ProjectType pt = BuildService.getProjectType(repository);
-        Service buildService = null;
+    public static void build(File projectDir) {
+        final ProjectType pt = BuildService.getProjectType(projectDir);
+        Service buildService;
 
         switch (pt) {
             case Gradle:
@@ -31,23 +29,23 @@ public class BuildService {
 
         }
 
-        buildService.build(repository);
+        buildService.build(projectDir);
     }
 
     /**
      * Determines if a GitRepository contains a Maven- or a Gradle-project.
      * Returns 'Unknown' if neither of these.
      *
-     * @param repository
+     * @param projectDir
      * @return ProjectType
      */
-    public static ProjectType getProjectType(GitRepository repository) {
-        File temp = new File(repository.getAbsolutePath() + File.separator + "pom.xml");
+    public static ProjectType getProjectType(File projectDir) {
+        File temp = new File(projectDir.getAbsolutePath() + File.separator + "pom.xml");
         if (temp.exists()) {
             return ProjectType.Maven;
         }
 
-        temp = new File(repository.getAbsolutePath() + File.separator + "gradlew");
+        temp = new File(projectDir.getAbsolutePath() + File.separator + "gradlew");
         if (temp.exists()) {
             return ProjectType.Gradle;
         }
