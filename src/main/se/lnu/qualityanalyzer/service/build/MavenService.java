@@ -1,7 +1,6 @@
 package se.lnu.qualityanalyzer.service.build;
 
 import org.apache.maven.shared.invoker.*;
-import se.lnu.qualityanalyzer.model.git.GitRepository;
 
 import java.io.File;
 import java.util.Collections;
@@ -11,14 +10,10 @@ public class MavenService implements Service {
     private final static String POM_XML = "pom.xml";
     private final static String DEPENDENCY = "clean dependency:copy-dependencies package -DskipTests";
 
-    public void build(GitRepository repository) {
-        this.run(repository.getAbsolutePath());
-    }
-
-    public void run(String sourcePath) {
+    public void build(File projectDir) {
         try {
             InvocationRequest request = new DefaultInvocationRequest();
-            request.setPomFile(new File(sourcePath + File.separator + POM_XML));
+            request.setPomFile(new File(projectDir.getAbsolutePath() + File.separator + POM_XML));
             request.setGoals(Collections.singletonList(DEPENDENCY));
             request.setOutputHandler(line -> {});
             request.setErrorHandler(line -> {});

@@ -1,8 +1,7 @@
 package se.lnu.qualityanalyzer.service.build;
 
-import se.lnu.qualityanalyzer.model.git.GitRepository;
+import java.io.File;
 
 public interface Service {
-    public void build(GitRepository repository);
-
+    public void build(File projectDir);
 }
