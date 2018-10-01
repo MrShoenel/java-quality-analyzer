@@ -1,17 +1,21 @@
-package se.lnu.qualityanalyzer.service.maven;
+package se.lnu.qualityanalyzer.service.build;
 
 import org.apache.maven.shared.invoker.*;
-import se.lnu.qualityanalyzer.exception.MavenException;
+import se.lnu.qualityanalyzer.model.git.GitRepository;
 
 import java.io.File;
 import java.util.Collections;
 
-public class MavenService {
+public class MavenService implements Service {
 
     private final static String POM_XML = "pom.xml";
     private final static String DEPENDENCY = "clean dependency:copy-dependencies package -DskipTests";
 
-    public void run(String sourcePath) throws MavenException {
+    public void build(GitRepository repository) {
+        this.run(repository.getAbsolutePath());
+    }
+
+    public void run(String sourcePath) {
         try {
             InvocationRequest request = new DefaultInvocationRequest();
             request.setPomFile(new File(sourcePath + File.separator + POM_XML));
@@ -23,7 +27,7 @@ public class MavenService {
             invoker.getLogger().setThreshold(InvokerLogger.FATAL);
             invoker.execute(request);
         } catch (MavenInvocationException e) {
-            throw new MavenException(e);
+            throw new Error(e);
         }
     }
 }

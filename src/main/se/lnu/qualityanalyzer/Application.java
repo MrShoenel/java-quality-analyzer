@@ -6,7 +6,8 @@ import se.lnu.qualityanalyzer.enums.MetricName;
 import se.lnu.qualityanalyzer.model.analysis.Metric;
 import se.lnu.qualityanalyzer.model.git.GitRepository;
 import se.lnu.qualityanalyzer.service.analysis.impl.VizzMetricAnalyzer;
-import se.lnu.qualityanalyzer.service.maven.MavenService;
+import se.lnu.qualityanalyzer.service.build.BuildService;
+import se.lnu.qualityanalyzer.service.build.MavenService;
 
 import java.io.File;
 import java.io.IOException;
@@ -66,11 +67,10 @@ public class Application {
         }
 
         // Now let's try to build this..
-        MavenService mvnSvc = new MavenService();
         try {
-            mvnSvc.run(repo.getAbsolutePath());
+            BuildService.build(repo);
         } catch (Throwable t) {
-            stderr.println("Cannot build the repo using Maven.");
+            stderr.println("Cannot build the repo: " + t.getMessage());
             stderr.println(t.getMessage());
             System.exit(-3);
         }
