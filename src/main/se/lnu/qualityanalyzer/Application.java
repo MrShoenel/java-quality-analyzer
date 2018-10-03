@@ -1,17 +1,23 @@
 package se.lnu.qualityanalyzer;
 
 import com.google.gson.Gson;
+import se.arisa.vizzanalyzer.frontends.QualityMonitor.AnalysisHandler;
+import se.arisa.vizzanalyzer.frontends.QualityMonitor.AnalysisType;
 import se.lnu.qualityanalyzer.enums.ExitCodes;
 import se.lnu.qualityanalyzer.enums.MetricName;
 import se.lnu.qualityanalyzer.model.analysis.Metric;
 import se.lnu.qualityanalyzer.service.analysis.impl.VizzMetricAnalyzer;
 import se.lnu.qualityanalyzer.service.build.BuildService;
+import se.lnu.qualityanalyzer.util.JsonOutput;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.lang.reflect.Array;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -81,8 +87,7 @@ public class Application {
         VizzMetricAnalyzer vizzMetricAnalyzer = new VizzMetricAnalyzer();
         String json = null;
         try {
-            Map<MetricName, Metric> commitMetrics = vizzMetricAnalyzer.analyze(projectDir.getAbsolutePath());
-            json = new Gson().toJson(commitMetrics);
+            json = vizzMetricAnalyzer.analyzeToJson(projectDir.getAbsolutePath()).fill().toString();
         } catch (Throwable t) {
             stderr.println("Cannot obtain metrics using VizzMetricAnalyzer: " + t.getMessage());
             t.printStackTrace(stderr);
