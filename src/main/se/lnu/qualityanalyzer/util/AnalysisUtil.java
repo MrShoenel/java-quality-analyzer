@@ -52,39 +52,4 @@ public final class AnalysisUtil {
             ParametersCollectionSerializer.serialize(analysisHandler.getParameters(), AnalysisType.JAVA);
         }
     }
-
-    public static void printPublicMetrics(AnalysisInterface analysisHandler, AnalysisType analysisType) {
-        MetricsFactory mf = analysisType.getMetricsFactory();
-        Measurement measurement = analysisHandler.getMeasurement(AnalysisInterface.EntryType.UPLOAD, null);
-        //printMetrics(mf.getAllPublicMetrics(), measurement);
-    }
-
-    public static void printRootMetrics(AnalysisInterface analysisHandler, AnalysisType analysisType) {
-        MetricsFactory mf = analysisType.getMetricsFactory();
-        Measurement measurement = analysisHandler.getMeasurement(AnalysisInterface.EntryType.PROGRAM,
-                analysisHandler.getPrograms().entrySet().iterator().next().getKey());
-        //printMetrics(mf.getAllRootMetrics(), measurement);
-    }
-
-    @Deprecated
-    private static void printMetrics(Collection<Metrics> metrics, Measurement measurement) {
-        System.out.println("\nResult of quality analysis - KPI's:");
-        for (Metrics metric : metrics) {
-            System.out.print(metric.getMetricName());
-            System.out.println(" = " + measurement.getMetricsValue(metric));
-            System.out.print("\n");
-        }
-        System.out.print("\n");
-    }
-
-    public static Double getTotalQuality(Map<MetricName, Metric> metrics) {
-        Double result = 0.0;
-
-        for (Map.Entry<MetricName, Metric> entry : metrics.entrySet()) {
-            result += entry.getValue().getValue();
-        }
-
-        return result / metrics.size();
-    }
-
 }
