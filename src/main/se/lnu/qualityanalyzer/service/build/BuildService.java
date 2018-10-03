@@ -22,6 +22,13 @@ public class BuildService {
                 break;
             case Maven:
                 buildService = BuildService.MavenBuildService;
+                // Also make sure the "java" directory exists so that VizzAnalyzer detects it
+                // as Maven project:
+                File mavenJavaDir = new File(projectDir.getAbsolutePath() + File.separator
+                    + "src" + File.separator + "main" + File.separator + "java");
+                if (!mavenJavaDir.exists()) {
+                    mavenJavaDir.mkdirs();
+                }
                 break;
             case Unknown:
             default:
