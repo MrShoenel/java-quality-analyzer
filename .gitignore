@@ -1,6 +1,7 @@
 # IntelliJ IDEA files
 /.idea/*.xml
 /.idea/.name
+/.idea/libraries/*
 !/.idea/artifacts/*
 /**/*.iml
 
