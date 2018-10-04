@@ -20,11 +20,11 @@ public class JsonOutput {
 
     protected transient Map<Metrics, String> metrics, metricsScores;
 
-    protected transient Map<OutputEntityType, String> outputEntityTypes;
-
     protected transient Map<String, Metrics> metricsById, metricsScoreById;
 
-    protected Map<String, OutputEntityType> outputEntityTypesById;
+    protected transient Map<Integer, OutputEntityType> outputEntityTypesById;
+
+    protected Map<OutputEntityType, Integer> outputEntityTypes;
 
     protected Collection<Metrics> allMetrics;
 
@@ -71,7 +71,7 @@ public class JsonOutput {
 
         Integer i = 0;
         for (OutputEntityType oet : OutputEntityType.values()) {
-            this.outputEntityTypesById.put(String.format("%03d", i++), oet);
+            this.outputEntityTypesById.put(i++, oet);
         }
 
         this.outputEntityTypes = this.outputEntityTypesById
