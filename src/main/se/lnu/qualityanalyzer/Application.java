@@ -15,10 +15,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Application {
@@ -47,6 +44,7 @@ public class Application {
     }
 
     public static void main(String[] args) {
+        Locale.setDefault(new Locale("en", "US"));
         double version = Double.parseDouble(System.getProperty("java.specification.version"));
         if (version > 1.8) {
             stderr.println("Java versions newer than 1.8 are not supported.");
